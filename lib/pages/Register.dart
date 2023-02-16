@@ -1,4 +1,8 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart';
 
 class MyRegister extends StatefulWidget {
   const MyRegister({Key? key}) : super(key: key);
@@ -8,8 +12,47 @@ class MyRegister extends StatefulWidget {
 }
 
 class _MyRegisterState extends State<MyRegister> {
+  String name="";
+  String age="";
+  String mobile="";
+  String address="";
+  String password="";
+   String email="";
+
+  void sendData() async {
+    final uri = Uri.parse('http://10.0.2.2:3000/form');
+    final headers = {'Content-Type': 'application/json'};
+    Map<String, dynamic> body = {
+      'name': name,
+      'age' : age,
+      'mobile' : mobile,
+      'address' : address,
+      'password' : password,
+      'email' : email
+    };
+    String jsonBody = json.encode(body);
+    print(jsonBody);
+    final encoding = Encoding.getByName('utf-8');
+    Response response = await post(
+      uri,
+      headers: headers,
+      body: jsonBody,
+      encoding: encoding,
+    );
+    print(response.body);
+    int statusCode = response.statusCode;
+    String responseBody = response.body;
+    print(statusCode);
+  }
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _controller = TextEditingController();
+
+    @override
+    void dispose() {
+      _controller.dispose();
+      super.dispose();
+    }
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -42,6 +85,12 @@ class _MyRegisterState extends State<MyRegister> {
                       child: Column(
                         children: [
                           TextField(
+                      controller: _controller,
+                      onChanged: (String value)async{
+                        setState((){
+                          name = value ;
+                        });
+                      },
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
@@ -66,6 +115,12 @@ class _MyRegisterState extends State<MyRegister> {
                             height: 30,
                           ),
                           TextField(
+                            controller: _controller,
+                            onChanged: (String value){
+                              setState((){
+                                email = value ;
+                              });
+                            },
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
@@ -90,8 +145,14 @@ class _MyRegisterState extends State<MyRegister> {
                             height: 30,
                           ),
                           TextField(
+                            controller: _controller,
+                            onChanged: (String value){
+                              setState((){
+                                password = value ;
+                              });
+                            },
                             style: TextStyle(color: Colors.white),
-                            obscureText: true,
+                            //obscureText: true,
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -114,6 +175,96 @@ class _MyRegisterState extends State<MyRegister> {
                           SizedBox(
                             height: 40,
                           ),
+                          TextField(
+                            controller: _controller,
+                            onChanged: (String value){
+                              setState((){
+                                mobile = value ;
+                              });
+                            },
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                hintText: "Mobile",
+                                hintStyle: TextStyle(color: Colors.white),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                )),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          TextField(
+                            controller: _controller,
+                            onChanged: (String value){
+                              setState((){
+                                address= value ;
+                              });
+                            },
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                hintText: "Address",
+                                hintStyle: TextStyle(color: Colors.white),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                )),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
+                          TextField(
+                            controller: _controller,
+                            onChanged: (String value){
+                              setState((){
+                                age = value ;
+                              });
+                            },
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide: BorderSide(
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                hintText: "Age",
+                                hintStyle: TextStyle(color: Colors.white),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                )),
+                          ),
+                          SizedBox(
+                            height: 30,
+                          ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -129,7 +280,9 @@ class _MyRegisterState extends State<MyRegister> {
                                 backgroundColor: Color(0xff4c505b),
                                 child: IconButton(
                                     color: Colors.white,
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      sendData();
+                                    },
                                     icon: Icon(
                                       Icons.arrow_forward,
                                     )),
